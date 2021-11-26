@@ -128,6 +128,12 @@ func (o *PruneOptions) Run() error {
 		return nil
 	}
 
+	// If the cert dir does not exist, do nothing.
+	// The dir will get eventually created by an installer pod.
+	if _, err := os.Stat(path.Join(o.ResourceDir, o.CertDir)); os.IsNotExist(err) {
+		return nil
+	}
+
 	return filepath.Walk(path.Join(o.ResourceDir, o.CertDir),
 		func(filePath string, info os.FileInfo, err error) error {
 			if err != nil {
